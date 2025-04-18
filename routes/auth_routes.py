@@ -1,6 +1,6 @@
 from flask import Blueprint, request, jsonify
 from models.user import User
-from services.auth_service import generate_token
+from services import generate_token
 
 auth_bp = Blueprint('auth', __name__)
 
@@ -30,13 +30,21 @@ def login():
             "user": {
                 "id": user["id"],
                 "name": user["name"],
-                "email": user["mail"],
-                "role": user["rol"]
+                "email": user["email"],
+                "role": user["role"]
             }
         })
 
     except Exception as e:
         return jsonify({"error": str(e)}), 500
+
+
+@auth_bp.route("/auth/logout", methods=["POST"])
+def logout():
+    """
+    Cerrar sesión. El token debe eliminarse del lado cliente.
+    """
+    return jsonify({"message": "Logout successful. Please delete the token on client side."}), 200
 
 
 @auth_bp.route("/auth/register", methods=["POST"])
@@ -46,14 +54,14 @@ def register():
     """
     data = request.get_json()
     required_fields = ["name", "surname", "genre",
-                       "date_born", "phone", "mail", "password"]
+                       "date_born", "phone", "email", "password"]
 
     # Verificar campos requeridos
     if not all(field in data for field in required_fields):
         return jsonify({"error": "Missing required fields"}), 400
 
     # Por defecto todos los usuarios nuevos son "user"
-    data["rol"] = "user"
+    data["role"] = "user"
 
     try:
         user_id = User.create_user(data)

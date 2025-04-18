@@ -2,11 +2,10 @@ import os
 import jwt
 from datetime import datetime, timedelta
 from flask import request, jsonify
-from models.user import User
 from functools import wraps
 
 # Configuraciones para JWT
-SECRET_KEY = os.environ.get("SECRET_KEY", "your-secret-key-for-development")
+SECRET_KEY = os.environ.get("SECRET_KEY")
 JWT_ALGORITHM = "HS256"
 JWT_EXPIRATION = 24  # horas
 
@@ -39,6 +38,8 @@ def get_current_user():
     """
     Obtiene el usuario actual desde el token de autorización
     """
+    from models import User
+    
     auth_header = request.headers.get("Authorization")
 
     if not auth_header or not auth_header.startswith("Bearer "):
@@ -84,7 +85,7 @@ def admin_required(f):
         if current_user is None:
             return jsonify({"error": "Authentication required"}), 401
 
-        if current_user.get("rol", "").lower() != "admin":
+        if current_user.get("role", "").lower() != "admin":
             return jsonify({"error": "Admin privileges required"}), 403
 
         return f(current_user, *args, **kwargs)

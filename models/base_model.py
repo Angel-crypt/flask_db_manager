@@ -1,5 +1,5 @@
 from abc import ABC, abstractmethod
-from services.db_service import get_db_connection
+from services import get_db_connection
 from mysql.connector import Error as MySQLError
 
 

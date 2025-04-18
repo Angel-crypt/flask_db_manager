@@ -1,7 +1,6 @@
-# routes/user_routes.py
 from flask import Blueprint, request, jsonify
-from models.user import User
-from services.auth_service import admin_required, token_required
+from models import User
+from services import admin_required, token_required
 
 users_bp = Blueprint('users', __name__)
 
@@ -24,12 +23,12 @@ def get_users(current_user):
                 "date_born": user["date_born"].strftime('%d-%m-%Y'),
                 "date_enrollment": user["date_enrollment"].strftime('%d-%m-%Y %H:%M:%S'),
                 "phone": user["phone"],
-                "mail": user["mail"],
-                "rol": user["rol"]
+                "email": user["email"],
+                "role": user["role"]
             }
             users_list.append(user_data)
 
-        return jsonify(users_list)
+        return jsonify(users_list), 200
 
     except Exception as e:
         return jsonify({"error": str(e)}), 500
@@ -54,11 +53,11 @@ def get_user(current_user, user_id):
             "date_born": user["date_born"].strftime('%d-%m-%Y'),
             "date_enrollment": user["date_enrollment"].strftime('%d-%m-%Y %H:%M:%S'),
             "phone": user["phone"],
-            "mail": user["mail"],
-            "rol": user["rol"]
+            "email": user["email"],
+            "role": user["role"]
         }
 
-        return jsonify(user_data)
+        return jsonify(user_data), 200
 
     except Exception as e:
         return jsonify({"error": str(e)}), 500
@@ -78,11 +77,11 @@ def get_profile(current_user):
             "date_born": current_user["date_born"].strftime('%d-%m-%Y'),
             "date_enrollment": current_user["date_enrollment"].strftime('%d-%m-%Y %H:%M:%S'),
             "phone": current_user["phone"],
-            "mail": current_user["mail"],
-            "rol": current_user["rol"]
+            "email": current_user["email"],
+            "role": current_user["role"]
         }
 
-        return jsonify(user_data)
+        return jsonify(user_data), 200
 
     except Exception as e:
         return jsonify({"error": str(e)}), 500
@@ -113,7 +112,7 @@ def update_profile(current_user):
         if rows_updated == 0:
             return jsonify({"error": "No changes made"}), 400
 
-        return jsonify({"message": "Profile updated successfully"})
+        return jsonify({"message": "Profile updated successfully"}), 200
 
     except Exception as e:
         return jsonify({"error": str(e)}), 500
@@ -129,7 +128,7 @@ def delete_user(current_user, user_id):
         if rows_deleted == 0:
             return jsonify({"error": "User not found"}), 404
 
-        return jsonify({"message": "User deleted successfully"})
+        return jsonify({"message": "User deleted successfully"}), 200
 
     except Exception as e:
         return jsonify({"error": str(e)}), 500

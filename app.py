@@ -2,12 +2,16 @@
 import os
 from flask import Flask, jsonify
 from dotenv import load_dotenv
-from routes.auth_routes import auth_bp
-from routes.users_routes import users_bp
-from routes.payment_routes import payment_bp
-from routes.content_routes import content_bp
-from routes.purchase_routes import purchase_bp
-from routes.wish_list_routes import wish_list_bp
+from flask_cors import CORS
+
+from routes import (
+    auth_bp,
+    users_bp,
+    payment_bp,
+    content_bp,
+    purchase_bp,
+    wish_list_bp
+)
 
 # Cargar variables de entorno
 load_dotenv()
@@ -16,6 +20,7 @@ load_dotenv()
 def create_app():
     """Crea y configura la aplicación Flask"""
     app = Flask(__name__)
+    CORS(app)
 
     # Configuración secreta
     app.config['SECRET_KEY'] = os.environ.get('SECRET_KEY', 'dev-secret-key')
@@ -49,4 +54,4 @@ if __name__ == "__main__":
     app = create_app()
     port = int(os.environ.get('PORT', 8000))
     app.run(host="0.0.0.0", port=port, debug=os.environ.get(
-        'FLASK_DEBUG', 'False').lower() == 'true')
+        'FLASK_DEBUG', 'TRUE').lower() == 'true')

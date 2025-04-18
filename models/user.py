@@ -1,13 +1,13 @@
 import bcrypt
 from models.base_model import BaseModel
-from services.db_service import get_db_connection
+from services import get_db_connection
 from mysql.connector.errors import IntegrityError
 
 
 class User(BaseModel):
     """Modelo para la tabla Users"""
 
-    table_name = "Users"
+    table_name = "users"
 
     @classmethod
     def create_user(cls, user_data):
@@ -26,9 +26,9 @@ class User(BaseModel):
         except Exception as e:
             if isinstance(e.__cause__, IntegrityError):
                 error_message = str(e.__cause__)
-                if "Users.phone" in error_message:
+                if "user.phone" in error_message:
                     raise Exception("Phone number already exists")
-                elif "Users.mail" in error_message:
+                elif "user.email" in error_message:
                     raise Exception("Email already exists")
             raise e
 
@@ -41,7 +41,7 @@ class User(BaseModel):
         cursor = conn.cursor(dictionary=True)
 
         try:
-            cursor.execute("SELECT * FROM Users WHERE mail = %s", (email,))
+            cursor.execute("SELECT * FROM users WHERE email = %s", (email,))
             user = cursor.fetchone()
 
             if not user:
@@ -66,4 +66,4 @@ class User(BaseModel):
         Verifica si un usuario es administrador
         """
         user = cls.get_by_id(user_id)
-        return user and user.get("rol", "").lower() == "admin"
+        return user and user.get("role", "").lower() == "admin"

@@ -12,7 +12,7 @@ config = {
 
 DB_NAME = 'filmHUB_db'
 SQL_FILE_PATH = os.path.join(os.path.dirname(
-    __file__), 'BlockBuster-Digital-DB.sql')
+    __file__), 'schema.sql')
 
 
 def create_database():
@@ -61,9 +61,9 @@ def execute_sql_from_file(file_path):
                     print(f"❌ Error al ejecutar: {command[:60]}... -> {err}")
 
         conn.commit()
-        print("✅ Tablas y datos cargados correctamente.")
+        print(f"✅ Archivo '{os.path.basename(file_path)}' ejecutado correctamente.")
     except Exception as e:
-        print(f"❌ Error ejecutando el archivo SQL: {e}")
+        print(f"❌ Error ejecutando el archivo SQL '{file_path}': {e}")
     finally:
         if conn.is_connected():
             cursor.close()
